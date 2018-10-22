@@ -5,10 +5,28 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 </head>
 <body>
-    <p>Bones: <span id='bonesCount'>0</span></p>
-    <p>Skeletons: <span id='skeletonsCount'>0</span></p>
-    <button onclick='gatherBones()'>Rob grave</button>
-    <button onclick='animateSkeleton()'>Animate Skeleton</button>
+    <h2>Tabs</h2>
+    <p>Click on the buttons inside the tabbed menu:</p>
+
+    <div class="tab">
+      <button class="tablinks" onclick="openTab(event, 'Resources')">Resources</button>
+      <button class="tablinks" onclick="openTab(event, 'Workers')">Workers</button>
+    </div>
+
+    <div id="Resources" class="tabcontent">
+        <h3>Resources</h3>
+        <p>Bones: <span id='bonesCount'>0</span></p>
+        <p>Wood: <span id='woodCount'>0</span></p>
+        <p>Stones: <span id='stonesCount'>0</span></p>
+        <button onclick='gatherBones()'>Rob grave</button>
+        <button onclick='animateSkeleton()'>Animate Skeleton</button>
+    </div>
+
+    <div id="Workers" class="tabcontent">
+        <p>Idle Skeletons: <span id='idleSkeletons'>0</span></p>
+        <table id='workersTable'></table>
+    </div>
 </body>
+<script src="js/interface.js"></script>
 <script src="js/main.js"></script>
 </html>
