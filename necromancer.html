@@ -9,8 +9,9 @@
     <p>Click on the buttons inside the tabbed menu:</p>
 
     <div class="tab">
-      <button class="tablinks" onclick="openTab(event, 'Resources')">Resources</button>
-      <button class="tablinks" onclick="openTab(event, 'Workers')">Workers</button>
+        <button class="tablinks" onclick="openTab(event, 'Resources')">Resources</button>
+        <button class="tablinks" onclick="openTab(event, 'Workers')">Workers</button>
+        <button class="tablinks" onclick="openTab(event, 'Army')">Army</button>
     </div>
 
     <div id="Resources" class="tabcontent">
@@ -25,6 +26,11 @@
     <div id="Workers" class="tabcontent">
         <p>Idle Skeletons: <span id='idleSkeletons'>0</span></p>
         <table id='workersTable'></table>
+    </div>
+    
+    <div id="Army" class="tabcontent">
+        <table id="armyTable"></table>
+        <p>Total Strength: <span id='armyStrength'>0</span></p>
     </div>
 </body>
 <script src="js/interface.js"></script>

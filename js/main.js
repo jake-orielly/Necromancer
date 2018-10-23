@@ -1,6 +1,7 @@
 var skeletons = 0;
 var resources = {bones:0,wood:0,stones:0}
 var workers = {bones:0,wood:0,stones:0};
+var army = {skeletalSpearmen:{num:0,name:'Skeletal Spearmen',cost:{wood:2,stone:1}}};
 var frames = 0;
 
 function gatherBones() {
@@ -31,6 +32,11 @@ function assignWorkers(given,num) {
         $('.workerAdd').show();
 }
 
+function buildUnit(given) {
+    army[given].num++;
+    $('#'+given+'Count').html(army[given].num);
+}
+
 function update() {
     $('#idleSkeletons').html(skeletons);
     for (var i in resources) {
@@ -47,6 +53,7 @@ var mainLoop = setInterval(function() {
 }, 20);
 
 buildWorkersTable();
+buildArmyTable();
 
 function buildWorkersTable() {
     var result = '';
@@ -59,6 +66,16 @@ function buildWorkersTable() {
         result += '</tr>';
     }
     $('#workersTable').html(result);
+}
+
+function buildArmyTable() {
+    var result = '';
+    for (var i in army) {
+        result += '<tr>';
+        result += '<td><p>' + army[i].name + ': <span id="' + i + 'Count">0</span></p></td>';
+        result += '</tr>';
+    }
+    $('#armyTable').html(result);
 }
 
 function round(given) {
