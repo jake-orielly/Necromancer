@@ -33,8 +33,26 @@ function assignWorkers(given,num) {
 }
 
 function buildUnit(given) {
-    army[given].num++;
-    $('#'+given+'Count').html(army[given].num);
+    if (canAfford(given)) {
+        takeCost(given);
+        army[given].num++;
+        $('#'+given+'Count').html(army[given].num);
+    }
+}
+
+function takeCost(given) {
+    var curr = army[given].cost;
+    for (var i in curr)
+        resources[i] -= curr[i];
+}
+
+function canAfford(given) {
+    var curr = army[given].cost;
+    var result = true;
+    for (var i in curr)
+        if (resources[i] < curr[i])
+            result = false;
+    return result;
 }
 
 function update() {
@@ -73,6 +91,7 @@ function buildArmyTable() {
     for (var i in army) {
         result += '<tr>';
         result += '<td><p>' + army[i].name + ': <span id="' + i + 'Count">0</span></p></td>';
+        result += '<td><p><button onclick="buildUnit(\'' + i + '\')">+</button></p></td>';
         result += '</tr>';
     }
     $('#armyTable').html(result);
