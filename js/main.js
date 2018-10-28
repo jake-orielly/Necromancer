@@ -1,6 +1,6 @@
 var skeletons = 0;
 var resources = {bones:0,wood:0,stones:0,corpses:0};
-resources = {bones:100,wood:100,stones:100,corpses:0};
+var resources = {bones:100,wood:100,stones:100,corpses:0};
 var workers = {bones:0,wood:0,stones:0};
 var army = {skeletalSpearmen:{num:0,name:'Skeletal Spearmen',strength:2,cost:{bones:10,wood:2,stone:1}}};
 var target = {travelers:{name:'Ambush Travelers',strength:5,loot:{corpses:3}}};
@@ -85,6 +85,8 @@ function update() {
             resources[i] += workers[i]/50;
     for (var i in resources)
         $('#' + i + 'Count').html(round(resources[i]));
+    if (!butcherProgressInterval && resources.corpses && buildings.butcher.count)
+        makeProgress('butcher');
     frames++;
 }
 
@@ -101,10 +103,15 @@ function makeProgress(given) {
     var x = 0;
     butcherProgressInterval = setInterval(function(){
         x += 2;
-        $('#' + given + 'Progress').width(x+'%');
+        if ($('#' + given + 'Progress').is(':visible'))
+            $('#' + given + 'Progress').width(x+'%');
         if (x > 100) {
-            $('#' + given + 'Progress').width('0%');
+            if ($('#' + given + 'Progress').is(':visible'))
+                $('#' + given + 'Progress').width('0%');
+            resources.corpses--;
+            resources.bones += 10;
             clearInterval(butcherProgressInterval);
+            butcherProgressInterval = undefined;    
         }
     },40);
 }
