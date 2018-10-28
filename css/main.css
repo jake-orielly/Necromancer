@@ -32,9 +32,15 @@ body {font-family: Arial;}
 /* Style the tab content */
 .tabcontent {
     display: none;
-    padding: 6px 12px;
+    padding: 12px 0px;
     border: 1px solid #ccc;
     border-top: none;
+    width:70%;
+    float:left;
+}
+
+.tabcontent *{
+    margin: 5px;
 }
 
 .workerAdd, .workerRemove {
@@ -51,5 +57,17 @@ body {font-family: Arial;}
 
 .armyDiv {
     display:inline-block;
-    width: 40%;
+    width: 40%; 
+}
+
+#resourceDiv, #tabMenu{
+    float:left;
+}
+
+#resourceDiv {
+    width:20%;
+}
+
+#tabMenu {
+    width:70%;
 }

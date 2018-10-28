@@ -1,8 +1,8 @@
 var skeletons = 0;
 var resources = {bones:0,wood:0,stones:0}
 var workers = {bones:0,wood:0,stones:0};
-var army = {skeletalSpearmen:{num:0,name:'Skeletal Spearmen',cost:{wood:2,stone:1}}};
-var target = {travelers:{name:'Ambush Travelers',strength:2}};
+var army = {skeletalSpearmen:{num:0,name:'Skeletal Spearmen',strength:2,cost:{bones:10,wood:2,stone:1}}};
+var target = {travelers:{name:'Ambush Travelers',strength:5,loot:{bones:10}}};
 var frames = 0;
 
 function gatherBones() {
@@ -39,6 +39,15 @@ function buildUnit(given) {
         army[given].num++;
         $('#'+given+'Count').html(army[given].num);
     }
+    
+    $('#armyStrength').html(calcStrength());
+}
+
+function calcStrength() {
+    var totalStrength = 0;
+    for (var i in army)
+        totalStrength += army[i].strength * army[i].num;
+    return totalStrength;
 }
 
 function takeCost(given) {
@@ -54,6 +63,13 @@ function canAfford(given) {
         if (resources[i] < curr[i])
             result = false;
     return result;
+}
+
+function attack(given) {
+    if (calcStrength() >= target[given].strength) {
+        for (var i in target[given].loot)
+            resources[i] += target[given].loot[i];
+    }
 }
 
 function update() {
@@ -105,7 +121,8 @@ function buildTargetTable() {
     for (var i in target) {
         result += '<tr>';
         result += '<td>' + target[i].name + '</td>';
-        result += '<td>' + target[i].strength + '<img class=\'strengthIcon\' src=\'art/strength.png\'></td>';
+        result += '<td>' + target[i].strength + '</td>';
+        result += '<td><button onClick="attack(\''+i+'\')">Attack</button></td>';
         result += '</tr>';
     }
     $('#targetTable').html(result);
