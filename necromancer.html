@@ -12,22 +12,27 @@
         <p>Stones: <span id='stonesCount'>0</span></p>
     </div>
     <div id='tabMenu' class="tab">
-        <button class="tablinks" onclick="openTab(event, 'Resources')">Resources</button>
-        <button class="tablinks" onclick="openTab(event, 'Workers')">Workers</button>
-        <button class="tablinks" onclick="openTab(event, 'Army')">Army</button>
+        <button class="tablinks" onclick="openTab(event, 'resources')">Resources</button>
+        <button class="tablinks" onclick="openTab(event, 'workers')">Workers</button>
+        <button class="tablinks" onclick="openTab(event, 'buildings')">Buildings</button>
+        <button class="tablinks" onclick="openTab(event, 'army')">Army</button>
     </div>
 
-    <div id="Resources" class="tabcontent">
+    <div id="resources" class="tabcontent">
         <button onclick='gatherBones()'>Rob grave</button>
         <button onclick='animateSkeleton()'>Animate Skeleton</button>
     </div>
 
-    <div id="Workers" class="tabcontent">
+    <div id="workers" class="tabcontent">
         <p>Idle Skeletons: <span id='idleSkeletons'>0</span></p>
         <table id='workersTable'></table>
     </div>
+
+    <div id="buildings" class="tabcontent">
+        <table id='buildingsTable'></table>
+    </div>
     
-    <div id="Army" class="tabcontent">
+    <div id="army" class="tabcontent">
         <div class='armyDiv'>
             <table id="armyTable"></table>
             <p>Total Strength: <span id='armyStrength'>0</span></p>

@@ -71,3 +71,23 @@ body {font-family: Arial;}
 #tabMenu {
     width:70%;
 }
+
+#buildingsTable tr td {
+    border: 1px solid black;
+    padding: 4px;
+    cursor: pointer;
+}
+
+#buildingsTable td {
+    position: relative;
+}
+
+.progressBar {
+    width: 0%;
+    height: 100%;
+    margin: 0px;
+    background-color: rgb(25,25,25,0.3);
+    position: absolute;
+    left: 0;
+    top: 0;
+}

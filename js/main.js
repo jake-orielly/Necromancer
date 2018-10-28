@@ -1,9 +1,12 @@
 var skeletons = 0;
-var resources = {bones:0,wood:0,stones:0}
+var resources = {bones:0,wood:0,stones:0,corpses:0};
+resources = {bones:100,wood:100,stones:100,corpses:0};
 var workers = {bones:0,wood:0,stones:0};
 var army = {skeletalSpearmen:{num:0,name:'Skeletal Spearmen',strength:2,cost:{bones:10,wood:2,stone:1}}};
-var target = {travelers:{name:'Ambush Travelers',strength:5,loot:{bones:10}}};
+var target = {travelers:{name:'Ambush Travelers',strength:5,loot:{corpses:3}}};
+var buildings = {butcher:{name:'Butcher',count:0,cost:{stones:25,wood:25}}};
 var frames = 0;
+var butcherProgressInterval;
 
 function gatherBones() {
     resources.bones++;
@@ -31,11 +34,12 @@ function assignWorkers(given,num) {
         $('.workerAdd').hide();
     else if (!$('.workerAdd').is(":visible"))
         $('.workerAdd').show();
+    $('#' + given + 'Workers').html(workers[given]);
 }
 
 function buildUnit(given) {
-    if (canAfford(given)) {
-        takeCost(given);
+    if (canAfford(given,army)) {
+        takeCost(given,army);
         army[given].num++;
         $('#'+given+'Count').html(army[given].num);
     }
@@ -50,14 +54,14 @@ function calcStrength() {
     return totalStrength;
 }
 
-function takeCost(given) {
-    var curr = army[given].cost;
+function takeCost(given,list) {
+    var curr = list[given].cost;
     for (var i in curr)
         resources[i] -= curr[i];
 }
 
-function canAfford(given) {
-    var curr = army[given].cost;
+function canAfford(given,list) {
+    var curr = list[given].cost;
     var result = true;
     for (var i in curr)
         if (resources[i] < curr[i])
@@ -67,6 +71,8 @@ function canAfford(given) {
 
 function attack(given) {
     if (calcStrength() >= target[given].strength) {
+        if (resources['corpses'] == 0 && target[given].loot['corpses'])
+            addCorpses();
         for (var i in target[given].loot)
             resources[i] += target[given].loot[i];
     }
@@ -74,12 +80,11 @@ function attack(given) {
 
 function update() {
     $('#idleSkeletons').html(skeletons);
-    for (var i in resources) {
+    for (var i in workers)
         if (frames % 10 == 0)
             resources[i] += workers[i]/50;
+    for (var i in resources)
         $('#' + i + 'Count').html(round(resources[i]));
-        $('#' + i + 'Workers').html(workers[i]);
-    }
     frames++;
 }
 
@@ -89,7 +94,24 @@ var mainLoop = setInterval(function() {
 
 buildWorkersTable();
 buildArmyTable();
+buildBuildingsTable();
 buildTargetTable();
+
+function makeProgress(given) {
+    var x = 0;
+    butcherProgressInterval = setInterval(function(){
+        x += 2;
+        $('#' + given + 'Progress').width(x+'%');
+        if (x > 100) {
+            $('#' + given + 'Progress').width('0%');
+            clearInterval(butcherProgressInterval);
+        }
+    },40);
+}
+
+function addCorpses() {
+    $('#resourceDiv').html($("#resourceDiv").html() + '<p>Corpses: <span id="corpsesCount">0</span></p>');
+}
 
 function buildWorkersTable() {
     var result = '';
@@ -126,6 +148,24 @@ function buildTargetTable() {
         result += '</tr>';
     }
     $('#targetTable').html(result);
+}
+
+function buildBuildingsTable() {
+    var result = '';
+    for (var i in buildings) {
+        result += '<tr>';
+        result += '<td onClick="buildBuilding(\''+i+'\')"><div>' + buildings[i].name + ': <span id="' + i +'Count">' + buildings[i].count + '</span><div class="progressBar" id="butcherProgress"></div></div></td>';
+        result += '</tr>';
+    }
+    $('#buildingsTable').html(result);
+}
+
+function buildBuilding(given) {
+    if(canAfford(given,buildings)) {
+        takeCost(given,buildings);
+        buildings[given].count++;
+        $('#'+given+'Count').html(buildings[given].count);
+    }
 }
 
 function round(given) {
