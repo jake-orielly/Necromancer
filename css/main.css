@@ -40,3 +40,16 @@ body {font-family: Arial;}
 .workerAdd, .workerRemove {
     display: none;
 }
+
+.strengthIcon {
+    width: 20px;
+}
+
+#targetTable td{
+    padding:0 15px 0 15px;
+}
+
+.armyDiv {
+    display:inline-block;
+    width: 40%;
+}

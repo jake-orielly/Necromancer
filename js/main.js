@@ -2,6 +2,7 @@ var skeletons = 0;
 var resources = {bones:0,wood:0,stones:0}
 var workers = {bones:0,wood:0,stones:0};
 var army = {skeletalSpearmen:{num:0,name:'Skeletal Spearmen',cost:{wood:2,stone:1}}};
+var target = {travelers:{name:'Ambush Travelers',strength:2}};
 var frames = 0;
 
 function gatherBones() {
@@ -72,6 +73,7 @@ var mainLoop = setInterval(function() {
 
 buildWorkersTable();
 buildArmyTable();
+buildTargetTable();
 
 function buildWorkersTable() {
     var result = '';
@@ -95,6 +97,18 @@ function buildArmyTable() {
         result += '</tr>';
     }
     $('#armyTable').html(result);
+}
+
+function buildTargetTable() {
+    var result = '';
+    result += '<tr><th>Target</th><th>Strength</th></tr>'
+    for (var i in target) {
+        result += '<tr>';
+        result += '<td>' + target[i].name + '</td>';
+        result += '<td>' + target[i].strength + '<img class=\'strengthIcon\' src=\'art/strength.png\'></td>';
+        result += '</tr>';
+    }
+    $('#targetTable').html(result);
 }
 
 function round(given) {
