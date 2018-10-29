@@ -16,6 +16,7 @@
         <button class="tablinks" onclick="openTab(event, 'workers')">Workers</button>
         <button class="tablinks" onclick="openTab(event, 'buildings')">Buildings</button>
         <button class="tablinks" onclick="openTab(event, 'army')">Army</button>
+        <button class="tablinks" onclick="openTab(event, 'upgrades')">Rituals</button>
     </div>
 
     <div id="resources" class="tabcontent">
@@ -39,6 +40,12 @@
         </div>
         <div class='armyDiv'>
             <table id='targetTable'></table>
+        </div>
+    </div>
+    <div id="upgrades" class="tabcontent">
+        <div id='dubiousMercy' onclick='dubiousMercy()'>
+            <h1>Dubious Mercy</h1>
+            <p>Your troops will sometimes take enemies alive.</p>
         </div>
     </div>
 </body>

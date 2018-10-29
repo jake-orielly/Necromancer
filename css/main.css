@@ -91,3 +91,22 @@ body {font-family: Arial;}
     left: 0;
     top: 0;
 }
+
+#upgrades {
+    text-align: center;
+}
+
+#upgrades div {
+    width: 60%;
+    margin-left: 20%;
+    border: 1px solid black;
+}
+
+h1 {
+    font-size: 20px;
+}
+
+#upgrades .bought {
+    color: #999;
+    border: 1px solid #999;
+}
