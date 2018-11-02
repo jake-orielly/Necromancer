@@ -1,15 +1,18 @@
 var skeletons = 0;
 var resources = {bones:0,wood:0,stones:0,corpses:0};
-var resources = {bones:100,wood:100,stones:100,corpses:0,prisoners:0,souls:0};
+var resources = {bones:300,wood:100,stones:100,corpses:0,prisoners:0,souls:0};
 var workers = {bones:0,wood:0,stones:0};
 var army = {skeletalSpearmen:{num:0,name:'Skeletal Spearmen',strength:2,cost:{bones:10,wood:2,stone:1}},
 zombieSpearmen:{num:0,name:'Zombie Spearmen',strength:3,cost:{corpses:1,wood:2,stone:1}}};
 var target = {travelers:{name:'Ambush Travelers',strength:5,loot:{corpses:[2,3]}}};
-var buildings = {butcher:{name:'Butcher',count:0,cost:{stones:25,wood:25}},
-ritualPit:{name:'Ritual Pit',count:0,cost:{wood:50,stones:30,corpses:10,bones:40}}};
+var buildings = {butcher:{name:'Butcher',count:0,cost:{stones:25,wood:25},
+                    action:{progress:0,cost:{corpses:1},result:{bones:10}}},
+ritualPit:{name:'Executioner',count:0,cost:{wood:50,stones:30,corpses:10,bones:40},
+                    action:{progress:0,cost:{prisoners:1},result:{souls:1}}}};
+var necromancer = {name:'Necromancer',count:0,cost:{bones:25,souls:10}};
 var frames = 0;
-var butcherProgressInterval;
 var dubiousMercyCost = {bones:25,corpses:5};
+var advancedAnimationCost = {bones:100,corpses:12,souls:6};
 
 function gatherBones() {
     resources.bones++;
@@ -21,15 +24,6 @@ function animateSkeleton() {
         skeletons++;
         if (!$('.workerAdd').is(":visible"))
             $('.workerAdd').show();
-    }
-}
-
-function sacrificePrisoner() {
-    if (resources.prisoners >= 1) {
-        if (resources.souls == 0)
-            addResource('souls');
-        resources.prisoners--;
-        resources.souls++;
     }
 }
 
@@ -64,9 +58,16 @@ function calcStrength() {
     return totalStrength;
 }
 
-function takeCost(given) {
+function give(given) {
+    console.log(given);
+    if (given.souls && resources.souls == 0)
+            addResource('souls');
+    takeCost(given,1);
+}
+
+function takeCost(given,add = -1) {
     for (var i in given)
-        resources[i] -= given[i];
+        resources[i] += given[i] * add;
 }
 
 function canAfford(given) {
@@ -97,8 +98,23 @@ function update() {
             resources[i] += workers[i]/50;
     for (var i in resources)
         $('#' + i + 'Count').html(round(resources[i]));
-    if (!butcherProgressInterval && resources.corpses && buildings.butcher.count)
-        makeProgress('butcher');
+    for (var i in buildings) {
+        var curr = buildings[i];
+        
+        if ((!curr.action.progress && canAfford(curr.action.cost) && curr.count) ||
+            (curr.action.progress)) {
+            curr.action.progress ++;
+            if ($('#' + i + 'Progress').is(':visible'))
+                $('#' + i + 'Progress').width(curr.action.progress+'%');
+            if (curr.action.progress > 100) {
+                if ($('#' + i + 'Progress').is(':visible'))
+                    $('#' + i + 'Progress').width('0%');
+                takeCost(curr.action.cost);
+                give(curr.action.result);
+                curr.action.progress = 0;    
+            }
+        }
+    }
     frames++;
 }
 
@@ -110,23 +126,6 @@ buildWorkersTable();
 buildArmyTable();
 buildBuildingsTable();
 buildTargetTable();
-
-function makeProgress(given) {
-    var x = 0;
-    butcherProgressInterval = setInterval(function(){
-        x += 2;
-        if ($('#' + given + 'Progress').is(':visible'))
-            $('#' + given + 'Progress').width(x+'%');
-        if (x > 100) {
-            if ($('#' + given + 'Progress').is(':visible'))
-                $('#' + given + 'Progress').width('0%');
-            resources.corpses--;
-            resources.bones += 10;
-            clearInterval(butcherProgressInterval);
-            butcherProgressInterval = undefined;    
-        }
-    },40);
-}
 
 function addResource(given) {
     $('#resourceDiv').html($("#resourceDiv").html() + '<p>' + given.substring(0,1).toUpperCase() 
@@ -174,7 +173,8 @@ function buildBuildingsTable() {
     var result = '';
     for (var i in buildings) {
         result += '<tr>';
-        result += '<td onClick="buildBuilding(\''+i+'\')"><div>' + buildings[i].name + ': <span id="' + i +'Count">' + buildings[i].count + '</span><div class="progressBar" id="butcherProgress"></div></div></td>';
+        result += '<td onClick="buildBuilding(\''+i+'\')"><div>' + buildings[i].name + ': <span id="' + i +'Count">' + buildings[i].count + 
+        '</span><div class="progressBar" id="' + i + 'Progress"></div></div></td>';
         result += '</tr>';
     }
     $('#buildingsTable').html(result);
@@ -182,8 +182,6 @@ function buildBuildingsTable() {
 
 function buildBuilding(given) {
     if(canAfford(buildings[given].cost)) {
-        if(given == 'ritualPit')
-            $('#sacrificePrisoner').show()
         takeCost(buildings[given].cost);
         buildings[given].count++;
         $('#'+given+'Count').html(buildings[given].count);
@@ -202,6 +200,14 @@ function dubiousMercy() {
             }
             curr.prisoners = [0,1];
         }
+    }
+}
+
+function advancedAnimation() {
+    if (canAfford(advancedAnimationCost)) {
+        takeCost(advancedAnimationCost);
+        $('#advancedAnimation').addClass('bought');
+        console.log(1); //Todo make this do stuff
     }
 }
 

@@ -14,7 +14,7 @@
     <div id='tabMenu' class="tab">
         <button class="tablinks" onclick="openTab(event, 'resources')">Resources</button>
         <button class="tablinks" onclick="openTab(event, 'workers')">Workers</button>
-        <button class="tablinks" onclick="openTab(event, 'buildings')">Buildings</button>
+        <button class="tablinks" onclick="openTab(event, 'buildings')">Generals</button>
         <button class="tablinks" onclick="openTab(event, 'army')">Army</button>
         <button class="tablinks" onclick="openTab(event, 'upgrades')">Rituals</button>
     </div>
@@ -22,7 +22,6 @@
     <div id="resources" class="tabcontent">
         <button onclick='gatherBones()'>Rob grave</button>
         <button onclick='animateSkeleton()'>Animate Skeleton</button>
-        <button onclick='sacrificePrisoner()' id='sacrificePrisoner'>Sacrifice Prisoner</button>
     </div>
 
     <div id="workers" class="tabcontent">
@@ -47,6 +46,10 @@
         <div id='dubiousMercy' onclick='dubiousMercy()'>
             <h1>Dubious Mercy</h1>
             <p>Your troops will sometimes take enemies alive.</p>
+        </div>
+        <div id='advancedAnimation' onclick='advancedAnimation()'>
+            <h1>Advanced Animation</h1>
+            <p>You can animate skeletal necromancers.</p>
         </div>
     </div>
 </body>
