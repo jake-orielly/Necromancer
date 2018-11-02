@@ -1,6 +1,6 @@
 var skeletons = 0;
-var resources = {bones:0,wood:0,stones:0,corpses:0};
 var resources = {bones:300,wood:100,stones:100,corpses:10,prisoners:0,souls:0};
+var resourceMaxes = {bones:300,wood:100,stones:100,corpses:20,prisoners:10,souls:10};
 var workers = {bones:0,wood:0,stones:0};
 var army = {skeletalSpearmen:{num:0,name:'Skeletal Spearmen',strength:2,cost:{bones:10,wood:2,stone:1}},
 zombieSpearmen:{num:0,name:'Zombie Spearmen',strength:3,cost:{corpses:1,wood:2,stone:1}}};
@@ -16,7 +16,12 @@ var dubiousMercyCost = {bones:25,corpses:5};
 var advancedAnimationCost = {bones:100,corpses:12,souls:6};
 
 function gatherBones() {
-    resources.bones++;
+    if(notMax('bones'))
+        resources.bones++;
+}
+
+function notMax(given,addon = 1) {
+    return resources[given] + addon < resourceMaxes[given]
 }
 
 function animateSkeleton() {
@@ -68,7 +73,10 @@ function give(given) {
 function takeCost(given,add = -1) {
     for (var i in given) {
         if (resources[i])
-            resources[i] += given[i] * add;
+            if (add < 1 || notMax(i,given[i]*add))
+                resources[i] += given[i] * add;
+            else
+                resources[i] = resourceMaxes[i];
         else if (army[i]) {
             army[i].num += given[i] * add;
             $('#'+i+'Count').html(army[i].num);
@@ -93,7 +101,10 @@ function attack(given) {
             temp = getVal(target[given].loot[i]);
             if (!$('#' + i + 'Count').is(':visible') && temp)
                 addResource(i);
-            resources[i] += temp;
+            if (notMax(i,temp))
+                resources[i] += temp;
+            else   
+                resources[i] = resourceMaxes[i];
         }
     }
 }
@@ -102,7 +113,10 @@ function update() {
     $('#idleSkeletons').html(skeletons);
     for (var i in workers)
         if (frames % 10 == 0)
-            resources[i] += workers[i]/50;
+            if (notMax(i,workers[i]/50))
+                resources[i] += workers[i]/50;
+            else
+                resources[i] = resourceMaxes[i];
     for (var i in resources)
         $('#' + i + 'Count').html(round(resources[i]));
     for (var i in buildings) {

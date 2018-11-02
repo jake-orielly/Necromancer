@@ -14,7 +14,8 @@ function openTab(evt, tabName) {
 
 function addResource(given) {
     $('#resourceDiv').html($("#resourceDiv").html() + '<p>' + given.substring(0,1).toUpperCase() 
-    + given.substring(1) + ': <span id="' + given + 'Count">' + resources[given] + '</span></p>');
+    + given.substring(1) + ': <span id="' + given + 'Count">' + resources[given] + 
+    '</span>/<span id="' + given + 'Max">' + resourceMaxes[given] + '</span></p>');
 }
 
 function buildWorkersTable() {
