@@ -134,67 +134,6 @@ buildArmyTable();
 buildBuildingsTable();
 buildTargetTable();
 
-function addResource(given) {
-    $('#resourceDiv').html($("#resourceDiv").html() + '<p>' + given.substring(0,1).toUpperCase() 
-    + given.substring(1) + ': <span id="' + given + 'Count">' + resources[given] + '</span></p>');
-}
-
-function buildWorkersTable() {
-    var result = '';
-    var workerNames = {bones:'Grave Robbers',wood:'Lumberjacks',stones:'Stone Pickers'};
-    for (var i in workers) {
-        result += '<tr>';
-        result += '<td><p>' + workerNames[i] + ': <span id="' + i + 'Workers">0</span></p></td>';
-        result += '<td><button class="workerAdd" onclick="assignWorkers(\'' + i + '\',1)">+</button></td>';
-        result += '<td><button class="workerRemove" id="' + i + 'Remove" onclick="assignWorkers(\'' + i + '\',-1)">-</button></td>';
-        result += '</tr>';
-    }
-    $('#workersTable').html(result);
-}
-
-function buildArmyTable() {
-    var result = '';
-    for (var i in army) {
-        result += '<tr>';
-        result += '<td><p>' + army[i].name + ': <span id="' + i + 'Count">0</span></p></td>';
-        result += '<td><p><button onclick="buildUnit(\'' + i + '\')">+</button></p></td>';
-        result += '</tr>';
-    }
-    $('#armyTable').html(result);
-}
-
-function buildTargetTable() {
-    var result = '';
-    result += '<tr><th>Target</th><th>Strength</th></tr>'
-    for (var i in target) {
-        result += '<tr>';
-        result += '<td>' + target[i].name + '</td>';
-        result += '<td>' + target[i].strength + '</td>';
-        result += '<td><button onClick="attack(\''+i+'\')">Attack</button></td>';
-        result += '</tr>';
-    }
-    $('#targetTable').html(result);
-}
-
-function buildBuildingsTable() {
-    var result = '';
-    for (var i in buildings) {
-        result += '<tr>';
-        result += '<td onClick="buildBuilding(\''+i+'\')"><div>' + buildings[i].name + ': <span id="' + i +'Count">' + buildings[i].count + 
-        '</span><div class="progressBar" id="' + i + 'Progress"></div></div></td>';
-        result += '</tr>';
-    }
-    $('#buildingsTable').html(result);
-}
-
-function buildBuilding(given) {
-    if(canAfford(buildings[given].cost)) {
-        takeCost(buildings[given].cost);
-        buildings[given].count++;
-        $('#'+given+'Count').html(buildings[given].count);
-    }
-}
-
 function dubiousMercy() {
     if (canAfford(dubiousMercyCost) && !$('#dubiousMercy').hasClass('bought')) {
         takeCost(dubiousMercyCost);
@@ -217,15 +156,4 @@ function advancedAnimation() {
         buildings.necromancer = necromancer;
         buildBuildingsTable();
     }
-}
-
-function round(given) {
-    var result = Math.floor(given * 100)/100;
-    return result;
-}
-
-function getVal(arr) {
-    if (Number.isInteger(arr))
-        return arr;
-    return parseInt(Math.random()*(arr[1]-(arr[0]-1))+arr[0]);
 }
