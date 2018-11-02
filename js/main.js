@@ -1,6 +1,6 @@
 var skeletons = 0;
 var resources = {bones:0,wood:0,stones:0,corpses:0};
-var resources = {bones:300,wood:100,stones:100,corpses:0,prisoners:0,souls:0};
+var resources = {bones:300,wood:100,stones:100,corpses:10,prisoners:0,souls:0};
 var workers = {bones:0,wood:0,stones:0};
 var army = {skeletalSpearmen:{num:0,name:'Skeletal Spearmen',strength:2,cost:{bones:10,wood:2,stone:1}},
 zombieSpearmen:{num:0,name:'Zombie Spearmen',strength:3,cost:{corpses:1,wood:2,stone:1}}};
@@ -9,7 +9,8 @@ var buildings = {butcher:{name:'Butcher',count:0,cost:{stones:25,wood:25},
                     action:{progress:0,cost:{corpses:1},result:{bones:10}}},
 ritualPit:{name:'Executioner',count:0,cost:{wood:50,stones:30,corpses:10,bones:40},
                     action:{progress:0,cost:{prisoners:1},result:{souls:1}}}};
-var necromancer = {name:'Necromancer',count:0,cost:{bones:25,souls:10}};
+var necromancer = {name:'Necromancer',count:0,cost:{bones:25,souls:10},
+                    action:{progress:0,cost:{bones:10,wood:2,stone:1},result:{skeletalSpearmen:1}}};
 var frames = 0;
 var dubiousMercyCost = {bones:25,corpses:5};
 var advancedAnimationCost = {bones:100,corpses:12,souls:6};
@@ -59,15 +60,21 @@ function calcStrength() {
 }
 
 function give(given) {
-    console.log(given);
-    if (given.souls && resources.souls == 0)
+    if (!$('#soulsCount').is(':visible') && given.souls)
             addResource('souls');
     takeCost(given,1);
 }
 
 function takeCost(given,add = -1) {
-    for (var i in given)
-        resources[i] += given[i] * add;
+    for (var i in given) {
+        if (resources[i])
+            resources[i] += given[i] * add;
+        else if (army[i]) {
+            army[i].num += given[i] * add;
+            $('#'+i+'Count').html(army[i].num);
+            $('#armyStrength').html(calcStrength());
+        }
+    }
 }
 
 function canAfford(given) {
@@ -207,7 +214,8 @@ function advancedAnimation() {
     if (canAfford(advancedAnimationCost)) {
         takeCost(advancedAnimationCost);
         $('#advancedAnimation').addClass('bought');
-        console.log(1); //Todo make this do stuff
+        buildings.necromancer = necromancer;
+        buildBuildingsTable();
     }
 }
 

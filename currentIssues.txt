@@ -1,0 +1,2 @@
+Player not getting souls from executions
+Necromancer progress getting stuck halfway when running out of bones
