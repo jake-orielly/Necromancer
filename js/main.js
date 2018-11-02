@@ -1,18 +1,18 @@
 var skeletons = 0;
 var resources = {bones:0,wood:0,stones:0,corpses:0};
-var resources = {bones:100,wood:100,stones:100,corpses:0,prisoners:0};
+var resources = {bones:100,wood:100,stones:100,corpses:0,prisoners:0,souls:0};
 var workers = {bones:0,wood:0,stones:0};
 var army = {skeletalSpearmen:{num:0,name:'Skeletal Spearmen',strength:2,cost:{bones:10,wood:2,stone:1}},
 zombieSpearmen:{num:0,name:'Zombie Spearmen',strength:3,cost:{corpses:1,wood:2,stone:1}}};
 var target = {travelers:{name:'Ambush Travelers',strength:5,loot:{corpses:[2,3]}}};
-var buildings = {butcher:{name:'Butcher',count:0,cost:{stones:25,wood:25}}};
+var buildings = {butcher:{name:'Butcher',count:0,cost:{stones:25,wood:25}},
+ritualPit:{name:'Ritual Pit',count:0,cost:{wood:50,stones:30,corpses:10,bones:40}}};
 var frames = 0;
 var butcherProgressInterval;
 var dubiousMercyCost = {bones:25,corpses:5};
 
 function gatherBones() {
     resources.bones++;
-    update();
 }
 
 function animateSkeleton() {
@@ -21,7 +21,15 @@ function animateSkeleton() {
         skeletons++;
         if (!$('.workerAdd').is(":visible"))
             $('.workerAdd').show();
-        update();
+    }
+}
+
+function sacrificePrisoner() {
+    if (resources.prisoners >= 1) {
+        if (resources.souls == 0)
+            addResource('souls');
+        resources.prisoners--;
+        resources.souls++;
     }
 }
 
@@ -174,6 +182,8 @@ function buildBuildingsTable() {
 
 function buildBuilding(given) {
     if(canAfford(buildings[given].cost)) {
+        if(given == 'ritualPit')
+            $('#sacrificePrisoner').show()
         takeCost(buildings[given].cost);
         buildings[given].count++;
         $('#'+given+'Count').html(buildings[given].count);
